@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+        "Montant brut" and "Remise", above the untaxed subtotal, in the form
+        view's totals block.
+
+        Injected here rather than by replacing account.TaxTotalsField: the
+        component is shared by invoices, purchase orders and sale orders, and
+        the rows are gated on keys that only sale_order.py writes, so every
+        other model keeps exactly the table it has today.
+
+        The markup mirrors the subtotal row two nodes below on purpose:
+        o_td_label / o_list_monetary and the same inline nowrap are what make
+        the column line up; a plainer row sits visibly off-grid.
+
+        formatMonetary() is the component's own method and already knows the
+        record's currency.
+    -->
+    <t t-name="methode_demo_config_defaults.TaxTotalsDiscount"
+       t-inherit="account.TaxTotalsField" t-inherit-mode="extension">
+        <xpath expr="//tbody/t[1]" position="before">
+            <t t-if="totals.methode_discount_amount_currency">
+                <tr>
+                    <td class="o_td_label">
+                        <label class="o_form_label o_tax_total_label">Montant brut</label>
+                    </td>
+                    <td class="o_list_monetary">
+                        <span style="white-space: nowrap;" dir="ltr"
+                              t-out="formatMonetary(totals.methode_discount_base_amount_currency)"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="o_td_label">
+                        <label class="o_form_label o_tax_total_label">Remise</label>
+                    </td>
+                    <td class="o_list_monetary">
+                        <span style="white-space: nowrap;" dir="ltr"
+                              t-out="formatMonetary(-totals.methode_discount_amount_currency)"/>
+                    </td>
+                </tr>
+            </t>
+        </xpath>
+    </t>
+
+</templates>

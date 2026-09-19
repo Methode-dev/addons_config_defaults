@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        The discount wizard's Percentage field, with a widget that refuses
+        anything but digits.
+
+        Core renders it widget="percentage", which formats and parses correctly
+        and validates nothing on the way in: a letter is accepted by the input,
+        rejected by parsePercentage() on blur, and turns the record invalid so
+        that "Appliquer" silently stops working. In the guided tour that reads
+        as a total freeze, because the tour has already stepped past a modal
+        that will now never close. See
+        methode_demo_config_defaults/static/src/js/percentage_input_guard.js.
+
+        Swapped here rather than patching the core widget globally: this makes
+        the change greppable from the view that has the problem, and leaves
+        every other percentage field in the database on Odoo's own component.
+
+        The field keeps its name and its input, so
+        devis_demo_tour_methode's `.modal div[name='discount_percentage'] input`
+        anchor is untouched.
+    -->
+    <record id="view_sale_order_discount_digits_only" model="ir.ui.view">
+        <field name="name">sale.order.discount.form.digits.only</field>
+        <field name="model">sale.order.discount</field>
+        <field name="inherit_id" ref="sale.sale_order_line_wizard_form"/>
+        <field name="arch" type="xml">
+            <field name="discount_percentage" position="attributes">
+                <attribute name="widget">percentage_digits_only</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>

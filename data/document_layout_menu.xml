@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Sales > Configuration > Settings is where "Configure Document
+        Layout" normally lives, but that screen is gated by
+        base.group_system alone (verified live against the running dev
+        database — sale.menu_sale_general_settings' group_ids), which a
+        demo lead's user deliberately does not have (demo_lead.py's
+        _create_lead_user, PLAN.md "no app installs, no hardcore
+        settings"). This is a direct, top-level shortcut under the Sales
+        app root instead, gated only by base.group_user so any lead can
+        reach it. Kept as a self-serve entry point: devis_demo_tour_methode's
+        tour no longer walks through the layout wizard (it costs three steps
+        and the lead can find this menu on their own).
+    -->
+    <menuitem id="menu_demo_document_layout"
+              name="Mise en page des documents"
+              parent="sale.sale_menu_root"
+              action="web.action_base_document_layout_configurator"
+              sequence="100"
+              groups="base.group_user"/>
+</odoo>

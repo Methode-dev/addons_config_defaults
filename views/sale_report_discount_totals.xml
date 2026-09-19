@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        The same two rows as the form view's totals block, in the printed
+        quotation and on the portal.
+
+        sale.document_tax_totals is the right seam and core says so: it is an
+        empty primary copy of account.document_tax_totals_template that sale
+        ships specifically so the sale-side totals can be edited without
+        touching the template invoices share, and sale_order's
+        _get_name_tax_totals_view() names it as the localisation hook. Both the
+        PDF (report_saleorder_document) and the portal page call it, so one
+        override covers both.
+
+        Anchored after the same_tax_base t-set rather than on the subtotals
+        loop: that node is unique and has no quoting to escape, whereas the
+        loop's t-foreach value contains its own single quotes.
+
+        Gated on the key, which only sale.order writes (models/sale_order.py).
+        An order with no discount prints exactly the table it printed before.
+    -->
+    <template id="sale_document_tax_totals_discount"
+              inherit_id="sale.document_tax_totals">
+        <xpath expr="//t[@t-set='same_tax_base']" position="after">
+            <t t-if="tax_totals.get('methode_discount_amount_currency')">
+                <tr class="o_subtotal">
+                    <td><span>Montant brut</span></td>
+                    <td class="text-end">
+                        <span t-out="tax_totals['methode_discount_base_amount_currency']"
+                              t-options='{"widget": "monetary", "display_currency": currency}'/>
+                    </td>
+                </tr>
+                <tr class="o_subtotal">
+                    <td><span>Remise</span></td>
+                    <td class="text-end">
+                        <span t-out="-tax_totals['methode_discount_amount_currency']"
+                              t-options='{"widget": "monetary", "display_currency": currency}'/>
+                    </td>
+                </tr>
+            </t>
+        </xpath>
+    </template>
+</odoo>
