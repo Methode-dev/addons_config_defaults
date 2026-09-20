@@ -1,9 +1,9 @@
 {
-    'name': 'Demo Config Defaults - Methode',
+    'name': 'Sale Discount Demo Access - Methode',
     'author': 'Méthode - Progiciel sur Mesure',
-    'version': '19.0.2.0.0',
+    'version': '19.0.1.0.0',
     'category': 'Technical',
-    'summary': "Universal sane defaults for every demo template (SHARED_ADDONS)",
+    'summary': "Sale order line discounts reachable without base.group_system (SHARED_ADDONS)",
     'description': """
 A home for company-wide settings a demo lead should never have to (and, once
 base.group_system is withheld -- demo_lead.py's _create_lead_user, CANNOT)
@@ -38,6 +38,11 @@ reported from a real walkthrough of the guided tour:
 
 Baked into every template via SHARED_ADDONS (build_demo_templates.py), same
 as demo_access_methode.
+
+Split out of the combined addons_config_defaults bundle: the first-login/TOTP
+enforcement (first_login_password_totp) and the res.company FR/EUR defaults
+(res_company_fr_defaults) are unrelated concerns and now live in their own
+addons alongside this one.
 """,
     'depends': ['sale_management'],
     'data': [
@@ -47,11 +52,11 @@ as demo_access_methode.
     ],
     'assets': {
         'web.assets_backend': [
-            'methode_demo_config_defaults/static/src/js/percentage_input_guard.js',
-            'methode_demo_config_defaults/static/src/xml/tax_totals_discount.xml',
+            'sale_discount_demo_access/static/src/js/percentage_input_guard.js',
+            'sale_discount_demo_access/static/src/xml/tax_totals_discount.xml',
         ],
         'web.assets_unit_tests': [
-            'methode_demo_config_defaults/static/tests/**/*',
+            'sale_discount_demo_access/static/tests/**/*',
         ],
     },
     'installable': True,

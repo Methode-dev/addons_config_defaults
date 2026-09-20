@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        French throughout on purpose (labels, help, button text): the brief
+        that asked for this wizard requires it, and every user this dialog
+        can reach is an internal user of a French-run deployment (see
+        models/ir_http.py's session_info guard). Field and method names stay
+        English, matching the rest of this addon and repo.
+    -->
+    <record id="view_first_login_good_practice_form" model="ir.ui.view">
+        <field name="name">first.login.good.practice.form</field>
+        <field name="model">first.login.good.practice</field>
+        <field name="arch" type="xml">
+            <form string="Première connexion" class="o_first_login_good_practice_form">
+                <p class="mb-2">
+                    Pour votre sécurité, changez votre mot de passe et activez la
+                    double authentification.
+                </p>
+                <group string="Nouveau mot de passe" col="3">
+                    <!--
+                        Three nested one-field groups instead of one three-field
+                        group: a plain <group> lays its fields out one per row
+                        at full label+input width, which for three short
+                        password fields is a lot of dead horizontal space and a
+                        tall, scrolly dialog. Odoo renders sibling <group>
+                        elements as side-by-side columns, which is the standard
+                        way to get a multi-column field layout without custom
+                        CSS; col="3" on the outer group (default is 2) is what
+                        puts all three on one row instead of wrapping the third.
+                    -->
+                    <group>
+                        <field name="current_password" password="True"
+                               string="Mot de passe actuel"/>
+                    </group>
+                    <group>
+                        <field name="new_password" password="True"
+                               string="Nouveau mot de passe"/>
+                    </group>
+                    <group>
+                        <field name="confirm_password" password="True"
+                               string="Confirmer le mot de passe"/>
+                    </group>
+                </group>
+                <group string="Double authentification">
+                    <p colspan="2" class="mb-2">
+                        Scannez ce QR code ou saisissez la clé manuellement, puis
+                        indiquez le code à 6 chiffres affiché par l'application.
+                    </p>
+                </group>
+                <!--
+                    QR code and the two remaining fields share one row instead
+                    of three stacked full-width sections: the previous
+                    vertical layout (QR centered above, secret+code below)
+                    pushed the whole form past typical dialog viewport height
+                    and forced scrolling to reach "Code de vérification" and
+                    the Confirm button. A flex row keeps everything above the
+                    fold.
+                -->
+                <div class="d-flex align-items-center gap-4">
+                    <field name="totp_qrcode" widget="image"
+                           options="{'size': [104, 104]}" nolabel="1"
+                           class="flex-shrink-0"/>
+                    <group class="flex-grow-1 mb-0">
+                        <field name="totp_secret_display"/>
+                        <field name="totp_code" string="Code de vérification"/>
+                    </group>
+                </div>
+                <field name="totp_wizard_id" invisible="1"/>
+                <footer>
+                    <button name="action_confirm" type="object"
+                            string="Confirmer" class="btn-primary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_first_login_good_practice" model="ir.actions.act_window">
+        <field name="name">Première connexion</field>
+        <field name="res_model">first.login.good.practice</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_first_login_good_practice_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

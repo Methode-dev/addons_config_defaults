@@ -1,0 +1,4 @@
+docs/_build/
+docs/.doctrees/
+__pycache__/
+*.pyc
