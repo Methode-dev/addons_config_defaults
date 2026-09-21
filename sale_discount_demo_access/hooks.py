@@ -8,9 +8,10 @@ def post_init_hook(env):
     Settings does, without a lead ever needing to reach that screen.
 
     Verified the real mechanism in sale/wizard/res_config_settings.py: the
-    setting is a plain Boolean field with implied_group='sale.group_discount_
-    per_so_line' -- Odoo's res.config.settings framework handles a field like
-    that by adding the implied group to base.group_user, nothing more exotic.
+    setting is a plain Boolean field with
+    ``implied_group='sale.group_discount_per_so_line'`` -- Odoo's
+    res.config.settings framework handles a field like that by adding the
+    implied group to base.group_user, nothing more exotic.
     product.group_product_pricelist is added alongside because the real
     Settings form's own @api.depends('group_discount_per_so_line') onchange
     turns that group on too the moment discounts are enabled -- same
@@ -24,6 +25,6 @@ def post_init_hook(env):
         'implied_ids': [(4, discount_group.id), (4, pricelist_group.id)],
     })
     _logger.info(
-        "methode_demo_config_defaults: base.group_user now implies %s, %s",
+        "sale_discount_demo_access: base.group_user now implies %s, %s",
         discount_group.name, pricelist_group.name,
     )

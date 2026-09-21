@@ -1,9 +1,8 @@
-from odoo.tests.common import TransactionCase, tagged
-
-from odoo.addons.methode_demo_config_defaults.models.sale_order import (
+from odoo.addons.sale_discount_demo_access.models.sale_order import (
     DISCOUNT_KEY,
     GROSS_KEY,
 )
+from odoo.tests.common import TransactionCase, tagged
 
 
 @tagged('post_install', '-at_install')
