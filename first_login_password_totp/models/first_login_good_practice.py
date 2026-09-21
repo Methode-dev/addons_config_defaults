@@ -34,12 +34,6 @@ class FirstLoginGoodPractice(models.TransientModel):
     _name = 'first.login.good.practice'
     _description = "Assistant première connexion"
     _transient_max_hours = 0.1
-
-    # Not required=True: that would be a DB-level NOT NULL, which blocks the
-    # very default_get()-only create() below that puts the QR code on screen
-    # before the user has typed anything -- the same reason core's own
-    # change.password.own wizard (odoo/addons/base/models/res_users.py)
-    # leaves its equivalent fields plain and checks them in code instead.
     current_password = fields.Char(string="Mot de passe actuel")
     new_password = fields.Char(string="Nouveau mot de passe")
     confirm_password = fields.Char(string="Confirmer le mot de passe")
@@ -47,11 +41,6 @@ class FirstLoginGoodPractice(models.TransientModel):
         'auth_totp.wizard',
         string="Activation de la double authentification",
     )
-    # Related rather than shown via a nested sub-form: a Many2one field
-    # cannot host an inline <form> the way a One2many can, so the two bits of
-    # totp_wizard_id the view actually needs to render (the QR code, and the
-    # secret as a fallback for a phone camera that can't reach it) are
-    # exposed directly here instead.
     totp_qrcode = fields.Binary(related='totp_wizard_id.qrcode', readonly=True)
     totp_secret_display = fields.Char(
         string="Clé secrète", related='totp_wizard_id.secret', readonly=True)
@@ -95,18 +84,11 @@ class FirstLoginGoodPractice(models.TransientModel):
             raise ValidationError(_(
                 "Le code de vérification à 6 chiffres est obligatoire."))
         try:
-            # _totp_try_setting compares against hotp()'s return value, which
-            # is an int (odoo/addons/auth_totp/models/totp.py hotp()), not a
-            # zero-padded string -- an int is what auth_totp.wizard.enable()
-            # itself passes it too, for the same reason.
             totp_code = int(self.totp_code)
         except ValueError:
             raise ValidationError(_(
                 "Le code de vérification ne doit contenir que des chiffres.")) from None
 
-        # Raises AccessDenied on a wrong current password -- the same check
-        # Settings > Change Password relies on (odoo/addons/base/models/
-        # res_users.py ResUsers.change_password).
         self.env['res.users'].change_password(self.current_password, self.new_password)
 
         if not self.env.user._totp_try_setting(self.totp_wizard_id.secret, totp_code):

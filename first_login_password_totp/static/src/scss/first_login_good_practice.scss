@@ -1,11 +1,3 @@
-// Hides the dialog's close (X) button for this one wizard: nothing actually
-// lets the user leave without completing it (first_login_guard_service.js
-// reopens the exact same action the instant it closes), so a visible but
-// non-functional X is misleading. ActionDialog only exposes a full
-// header:false/true toggle via action.context (see
-// web/static/src/webclient/actions/action_service.js), which would also
-// drop the "Première connexion" title -- scoping to the form's own root
-// class keeps the title and removes only the button.
 .o_dialog:has(.o_first_login_good_practice_form) .btn-close {
     display: none;
 }
